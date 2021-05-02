@@ -33,3 +33,6 @@ target_sources(
     PRIVATE # All private source and header files listed here
         src/task_scheduler.c
 )
+
+add_subdirectory(extern/linked_lists)
+target_link_libraries(${PROJECT_NAME} PRIVATE LinkedLists)
