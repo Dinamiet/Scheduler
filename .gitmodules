@@ -1,0 +1,4 @@
+[submodule "extern/linked_lists"]
+	path = extern/linked_lists
+	url = ../linked_lists.git
+	branch = master
