@@ -1,9 +1,10 @@
 #include "task_scheduler.h"
 
-void TaskScheduler_Init(TaskList* taskList, Task* buffer, uint32_t size)
+void TaskScheduler_Init(TaskList* taskList, uint32_t (*timeStampFunc)(), Task* buffer, uint32_t size)
 {
 	BufferedList_Init(&taskList->Tasks, (Node*)buffer, sizeof(Task), size);
-	taskList->Current = NULL;
+	taskList->timeStamp = timeStampFunc;
+	taskList->Current	= NULL;
 }
 
 Task* TaskScheduler_CreateRetriggerTask(TaskList* list, void (*callback)(void*), void* data, uint32_t period)
@@ -35,7 +36,7 @@ Task* TaskScheduler_CreateSingleShotTask(TaskList* list, void (*callback)(void*)
 		newTask->Type		  = SingleShotTask;
 		newTask->Status		  = ActiveTask;
 		newTask->Period		  = delay;
-		newTask->LastTimestep = 0;
+		newTask->LastTimestep = list->timeStamp();
 		newTask->Callback	  = callback;
 		newTask->Data		  = data;
 	}

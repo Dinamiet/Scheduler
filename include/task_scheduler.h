@@ -32,9 +32,10 @@ typedef struct
 {
 	Task*		 Current;
 	BufferedList Tasks;
+	uint32_t (*timeStamp)();
 } TaskList;
 
-void  TaskScheduler_Init(TaskList* taskList, Task* buffer, uint32_t size);
+void  TaskScheduler_Init(TaskList* taskList, uint32_t (*timeStampFunc)(), Task* buffer, uint32_t size);
 Task* TaskScheduler_CreateRetriggerTask(TaskList* list, void (*callback)(void*), void* data, uint32_t period);
 Task* TaskScheduler_CreateSingleShotTask(TaskList* list, void (*callback)(void*), void* data, uint32_t delay);
 void  TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status);
