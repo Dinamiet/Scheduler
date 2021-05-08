@@ -42,7 +42,7 @@ Task* TaskScheduler_CreateSingleShotTask(TaskList* list, void (*callback)(void*)
 void  TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status);
 void  TaskScheduler_ChangeTaskPeriod(Task* task, uint32_t period);
 void  TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void* data);
-// TODO: Remove task from the list
+void  TaskScheduler_RemoveTask(TaskList* list, Task* task);
 void TaskScheduler_RunNextTask(TaskList* list);
 
 #endif // __TASK_SCHEDULER__

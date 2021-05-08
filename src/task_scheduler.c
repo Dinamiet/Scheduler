@@ -47,6 +47,12 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 	task->Data	   = data;
 }
 
+void  TaskScheduler_RemoveTask(TaskList* list, Task* task)
+{
+	//TODO: Remove task from list
+	return;
+}
+
 void TaskScheduler_RunNextTask(TaskList* list)
 {
 	Task*	 currentTask = list->Current;
@@ -61,6 +67,10 @@ void TaskScheduler_RunNextTask(TaskList* list)
 			currentTask->Callback(currentTask->Data);
 			currentTask->LastTimestamp = now;
 			list->Current			   = (Task*)currentTask->List.Next;
+
+			if (currentTask->Type == SingleShotTask)
+				TaskScheduler_RemoveTask(list, currentTask);
+
 			return;
 		}
 		list->Current = (Task*)currentTask->List.Next;
