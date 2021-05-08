@@ -24,8 +24,8 @@ typedef struct
 	TaskStatus Status;
 	uint32_t   Period;
 	uint32_t   LastTimestep;
+	void*	   Data;
 	void (*Callback)(void*);
-	void* Data;
 } Task;
 
 typedef struct
@@ -42,6 +42,6 @@ void  TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status);
 void  TaskScheduler_ChangeTaskPeriod(Task* task, uint32_t period);
 void  TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void* data);
 // TODO: Remove task from the list
-void TaskScheduler_RunNextTask();
+void TaskScheduler_RunNextTask(TaskList* list);
 
 #endif // __TASK_SCHEDULER__

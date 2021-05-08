@@ -7,35 +7,15 @@ void TaskScheduler_Init(TaskList* taskList, uint32_t (*timeStampFunc)(), Task* b
 	taskList->Current	= NULL;
 }
 
-Task* TaskScheduler_CreateRetriggerTask(TaskList* list, void (*callback)(void*), void* data, uint32_t period)
+Task* createNewTask(TaskList* list, TaskTypes type, void (*callback)(void*), void* data, uint32_t period)
 {
 	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
 	if (newTask)
 	{
 		newTask->Name		  = 0;
-		newTask->Type		  = RecurringTask;
+		newTask->Type		  = type;
 		newTask->Status		  = ActiveTask;
 		newTask->Period		  = period;
-		newTask->LastTimestep = 0;
-		newTask->Callback	  = callback;
-		newTask->Data		  = data;
-	}
-
-	if (list->Current == NULL)
-		list->Current = newTask;
-
-	return newTask;
-}
-// TODO: This function is very close to other create - create 'private' function which does the initialization
-Task* TaskScheduler_CreateSingleShotTask(TaskList* list, void (*callback)(void*), void* data, uint32_t delay)
-{
-	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
-	if (newTask)
-	{
-		newTask->Name		  = 0;
-		newTask->Type		  = SingleShotTask;
-		newTask->Status		  = ActiveTask;
-		newTask->Period		  = delay;
 		newTask->LastTimestep = list->timeStamp();
 		newTask->Callback	  = callback;
 		newTask->Data		  = data;
@@ -45,6 +25,16 @@ Task* TaskScheduler_CreateSingleShotTask(TaskList* list, void (*callback)(void*)
 		list->Current = newTask;
 
 	return newTask;
+}
+
+Task* TaskScheduler_CreateRetriggerTask(TaskList* list, void (*callback)(void*), void* data, uint32_t period)
+{
+	return createNewTask(list, RecurringTask, callback, data, period);
+}
+
+Task* TaskScheduler_CreateSingleShotTask(TaskList* list, void (*callback)(void*), void* data, uint32_t delay)
+{
+	return createNewTask(list, SingleShotTask, callback, data, delay);
 }
 
 void TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status) { task->Status = status; }
@@ -57,7 +47,7 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 	task->Data	   = data;
 }
 
-void TaskScheduler_RunNextTask()
+void TaskScheduler_RunNextTask(TaskList* list)
 {
 	//TODO: All logic basically goes here...
 }
