@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main(int argc, char* argv[])
+int main()
 {
 	printf("Example\n");
 	return 0;
