@@ -19,11 +19,12 @@ typedef enum
 
 typedef struct
 {
+	Node	   List;
 	uint32_t   Name;
 	TaskTypes  Type;
 	TaskStatus Status;
 	uint32_t   Period;
-	uint32_t   LastTimestep;
+	uint32_t   LastTimestamp;
 	void*	   Data;
 	void (*Callback)(void*);
 } Task;

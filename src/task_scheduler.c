@@ -12,13 +12,13 @@ Task* createNewTask(TaskList* list, TaskTypes type, void (*callback)(void*), voi
 	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
 	if (newTask)
 	{
-		newTask->Name		  = 0;
-		newTask->Type		  = type;
-		newTask->Status		  = ActiveTask;
-		newTask->Period		  = period;
-		newTask->LastTimestep = list->timeStamp();
-		newTask->Callback	  = callback;
-		newTask->Data		  = data;
+		newTask->Name		   = 0;
+		newTask->Type		   = type;
+		newTask->Status		   = ActiveTask;
+		newTask->Period		   = period;
+		newTask->LastTimestamp = list->timeStamp();
+		newTask->Callback	   = callback;
+		newTask->Data		   = data;
 	}
 
 	if (list->Current == NULL)
@@ -49,5 +49,20 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 
 void TaskScheduler_RunNextTask(TaskList* list)
 {
-	//TODO: All logic basically goes here...
+	Task*	 currentTask = list->Current;
+	uint32_t now		 = list->timeStamp();
+	if (currentTask == NULL)
+	{
+		return;
+	}
+	do {
+		if (currentTask->Period >= (now - currentTask->LastTimestamp))
+		{
+			currentTask->Callback(currentTask->Data);
+			currentTask->LastTimestamp = now;
+			list->Current			   = (Task*)currentTask->List.Next;
+			return;
+		}
+		list->Current = (Task*)currentTask->List.Next;
+	} while (currentTask != list->Current);
 }
