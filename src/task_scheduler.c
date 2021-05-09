@@ -49,13 +49,7 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 
 void TaskScheduler_RemoveTask(TaskList* list, Task* task)
 {
-	//TODO: Remove task from list
-	task->Status = InactiveTask;
-	if (list->Current == task)
-	{
-		return;
-	}
-	return;
+	BufferedList_UnlinkNode(&list->Tasks, &task->List);	
 }
 
 void TaskScheduler_RunNextTask(TaskList* list)
