@@ -55,14 +55,14 @@ void  TaskScheduler_RemoveTask(TaskList* list, Task* task)
 
 void TaskScheduler_RunNextTask(TaskList* list)
 {
-	Task*	 currentTask = list->Current;
-	uint32_t now		 = list->timeStamp();
+	Task* currentTask = list->Current;
 	if (currentTask == NULL)
 	{
 		return;
 	}
 	do {
-		if (currentTask->Period >= (now - currentTask->LastTimestamp))
+		uint32_t now = list->timeStamp();
+		if (currentTask->Status == ActiveTask && currentTask->Period <= (now - currentTask->LastTimestamp))
 		{
 			currentTask->Callback(currentTask->Data);
 			currentTask->LastTimestamp = now;
@@ -73,6 +73,6 @@ void TaskScheduler_RunNextTask(TaskList* list)
 
 			return;
 		}
-		list->Current = (Task*)currentTask->List.Next;
+		currentTask = (Task*)currentTask->List.Next;
 	} while (currentTask != list->Current);
 }
