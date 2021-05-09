@@ -37,4 +37,4 @@ target_sources(
 )
 
 add_subdirectory(extern/linked_lists)
-target_link_libraries(${PROJECT_NAME} PRIVATE LinkedLists)
+target_link_libraries(${PROJECT_NAME} PUBLIC LinkedLists)
