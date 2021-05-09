@@ -49,10 +49,14 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 
 void TaskScheduler_RemoveTask(TaskList* list, Task* task)
 {
+	// The task being removed cannot be the next task to be checked.
 	if (list->NextTask == task)
 		list->NextTask = (Task*)task->List.Next;
+
+	// If the task being removed is still the next task in line (the only task queued), clear the next task.
 	if (list->NextTask == task)
 		list->NextTask = NULL;
+
 	BufferedList_UnlinkNode(&list->Tasks, &task->List);
 }
 
@@ -65,6 +69,7 @@ void TaskScheduler_RunNextTask(TaskList* list)
 	}
 	do {
 		uint32_t now = list->timeStamp();
+		// Task needs to be active and period expired for it to be run.
 		if (currentTask->Status == ActiveTask && currentTask->Period <= (now - currentTask->LastTimestamp))
 		{
 			currentTask->Callback(currentTask->Data);
