@@ -47,9 +47,14 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 	task->Data	   = data;
 }
 
-void  TaskScheduler_RemoveTask(TaskList* list, Task* task)
+void TaskScheduler_RemoveTask(TaskList* list, Task* task)
 {
 	//TODO: Remove task from list
+	task->Status = InactiveTask;
+	if (list->Current == task)
+	{
+		return;
+	}
 	return;
 }
 
