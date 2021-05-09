@@ -4,7 +4,7 @@ void TaskScheduler_Init(TaskList* taskList, uint32_t (*timeStampFunc)(), Task* b
 {
 	BufferedList_Init(&taskList->Tasks, (Node*)buffer, sizeof(Task), size);
 	taskList->timeStamp = timeStampFunc;
-	taskList->Current	= NULL;
+	taskList->NextTask	= NULL;
 }
 
 Task* createNewTask(TaskList* list, TaskTypes type, void (*callback)(void*), void* data, uint32_t period)
@@ -21,8 +21,8 @@ Task* createNewTask(TaskList* list, TaskTypes type, void (*callback)(void*), voi
 		newTask->Data		   = data;
 	}
 
-	if (list->Current == NULL)
-		list->Current = newTask;
+	if (list->NextTask == NULL)
+		list->NextTask = newTask;
 
 	return newTask;
 }
@@ -51,7 +51,7 @@ void TaskScheduler_RemoveTask(TaskList* list, Task* task) { BufferedList_UnlinkN
 
 void TaskScheduler_RunNextTask(TaskList* list)
 {
-	Task* currentTask = list->Current;
+	Task* currentTask = list->NextTask;
 	if (currentTask == NULL)
 	{
 		return;
@@ -62,7 +62,7 @@ void TaskScheduler_RunNextTask(TaskList* list)
 		{
 			currentTask->Callback(currentTask->Data);
 			currentTask->LastTimestamp = now;
-			list->Current			   = (Task*)currentTask->List.Next;
+			list->NextTask			   = (Task*)currentTask->List.Next;
 
 			if (currentTask->Type == SingleShotTask)
 				TaskScheduler_RemoveTask(list, currentTask);
@@ -70,5 +70,5 @@ void TaskScheduler_RunNextTask(TaskList* list)
 			return;
 		}
 		currentTask = (Task*)currentTask->List.Next;
-	} while (currentTask != list->Current);
+	} while (currentTask != list->NextTask);
 }

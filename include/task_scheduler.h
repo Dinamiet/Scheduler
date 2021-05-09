@@ -31,7 +31,7 @@ typedef struct
 
 typedef struct
 {
-	Task*		 Current;
+	Task*		 NextTask;
 	BufferedList Tasks;
 	uint32_t (*timeStamp)();
 } TaskList;

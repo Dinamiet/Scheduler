@@ -37,14 +37,13 @@ void WrongInc()
 int main()
 {
 	TaskList tasklist;
-	tasklist.Current = NULL;
-	if (tasklist.Current != NULL)
-	{
-		return 1;
-	}
 	startTime = getCurrentTime();
 	Task taskBuffer[TASK_BUFF_SIZE];
 	TaskScheduler_Init(&tasklist, &getCurrentTime, taskBuffer, TASK_BUFF_SIZE);
+	if (tasklist.NextTask != NULL)
+	{
+		return 1;
+	}
 
 	TaskScheduler_CreateSingleShotTask(&tasklist, &IncTask, NULL, 5);
 	Task* changingTask = TaskScheduler_CreateRetriggerTask(&tasklist, &IncTask, NULL, 7);
