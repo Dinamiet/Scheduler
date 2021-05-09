@@ -15,9 +15,9 @@ uint32_t resultBuffer[TEST_BUFFER_SIZE];
 
 uint32_t getCurrentTime()
 {
-	clock_t t  = clock();
-	double seconds= (double)t/(double)CLOCKS_PER_SEC;
-	return seconds*1000;
+	clock_t t		= clock();
+	double	seconds = (double)t / (double)CLOCKS_PER_SEC;
+	return seconds * 1000;
 }
 
 void IncTask()
@@ -63,13 +63,13 @@ int main()
 		return TEST_BUFFER_SIZE + 1;
 	}
 
-	uint32_t outputBuffer[TEST_BUFFER_SIZE] = {2, 5, 7, 10, 14, 20, 21, 28, 30, 40, 50, 51, 58, 60, 61, 64, 67, 70, 70, 73, 76, 79};
-	uint32_t testIndex						= 0;
+	uint32_t testBuffer[TEST_BUFFER_SIZE] = {2, 5, 7, 10, 14, 20, 21, 28, 30, 40, 50, 51, 58, 60, 61, 64, 67, 70, 70, 73, 76, 79};
+	uint32_t testIndex					  = 0;
 
 	while (getCurrentTime() - startTime < 31) { TaskScheduler_RunNextTask(&tasklist); }
-	while (outputBuffer[testIndex] < 31)
+	while (testBuffer[testIndex] < 31)
 	{
-		if (outputBuffer[testIndex] != resultBuffer[testIndex])
+		if (testBuffer[testIndex] != resultBuffer[testIndex])
 		{
 			return testIndex;
 		}
@@ -79,9 +79,9 @@ int main()
 	TaskScheduler_ChangeTaskStatus(changingTask, InactiveTask);
 
 	while (getCurrentTime() - startTime < 51) { TaskScheduler_RunNextTask(&tasklist); }
-	while (outputBuffer[testIndex] < 51)
+	while (testBuffer[testIndex] < 51)
 	{
-		if (outputBuffer[testIndex] != resultBuffer[testIndex])
+		if (testBuffer[testIndex] != resultBuffer[testIndex])
 		{
 			return testIndex;
 		}
@@ -90,9 +90,9 @@ int main()
 
 	TaskScheduler_ChangeTaskStatus(changingTask, ActiveTask);
 	while (getCurrentTime() - startTime < 61) { TaskScheduler_RunNextTask(&tasklist); }
-	while (outputBuffer[testIndex] < 61)
+	while (testBuffer[testIndex] < 61)
 	{
-		if (outputBuffer[testIndex] != resultBuffer[testIndex])
+		if (testBuffer[testIndex] != resultBuffer[testIndex])
 		{
 			return testIndex;
 		}
@@ -101,9 +101,9 @@ int main()
 
 	TaskScheduler_ChangeTaskPeriod(changingTask, 3);
 	while (getCurrentTime() - startTime < 71) { TaskScheduler_RunNextTask(&tasklist); }
-	while (outputBuffer[testIndex] < 71)
+	while (testBuffer[testIndex] < 71)
 	{
-		if (outputBuffer[testIndex] != resultBuffer[testIndex])
+		if (testBuffer[testIndex] != resultBuffer[testIndex])
 		{
 			return testIndex;
 		}
@@ -112,9 +112,9 @@ int main()
 
 	TaskScheduler_RemoveTask(&tasklist, removeTask);
 	while (getCurrentTime() - startTime < 81) { TaskScheduler_RunNextTask(&tasklist); }
-	while (outputBuffer[testIndex] < 81)
+	while (testBuffer[testIndex] < 81)
 	{
-		if (outputBuffer[testIndex] != resultBuffer[testIndex])
+		if (testBuffer[testIndex] != resultBuffer[testIndex])
 		{
 			return testIndex;
 		}
@@ -128,9 +128,9 @@ int main()
 	}
 	TaskScheduler_ChangeTaskCallback(testTask, &IncTask, NULL);
 	while (getCurrentTime() - startTime < 86) { TaskScheduler_RunNextTask(&tasklist); }
-	while (outputBuffer[testIndex] < 86)
+	while (testBuffer[testIndex] < 86)
 	{
-		if (outputBuffer[testIndex] != resultBuffer[testIndex])
+		if (testBuffer[testIndex] != resultBuffer[testIndex])
 		{
 			return testIndex;
 		}
