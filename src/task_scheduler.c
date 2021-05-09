@@ -49,7 +49,7 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 
 void TaskScheduler_RemoveTask(TaskList* list, Task* task)
 {
-	BufferedList_UnlinkNode(&list->Tasks, &task->List);	
+	BufferedList_UnlinkNode(&list->Tasks, &task->List);
 }
 
 void TaskScheduler_RunNextTask(TaskList* list)
