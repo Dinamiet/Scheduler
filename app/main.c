@@ -77,7 +77,6 @@ int main()
 	}
 
 	TaskScheduler_ChangeTaskStatus(changingTask, InactiveTask);
-
 	while (getCurrentTime() - startTime < 51) { TaskScheduler_RunNextTask(&tasklist); }
 	while (testBuffer[testIndex] < 51)
 	{
