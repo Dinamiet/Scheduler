@@ -4,6 +4,8 @@ project(
     TaskScheduler
 )
 
+if (NOT TARGET ${PROJECT_NAME})
+
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     # Let's nicely support folders in IDEs
@@ -38,3 +40,5 @@ target_sources(
 
 add_subdirectory(extern/linked_lists)
 target_link_libraries(${PROJECT_NAME} PUBLIC LinkedLists)
+
+endif()
