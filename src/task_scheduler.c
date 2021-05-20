@@ -68,12 +68,13 @@ void TaskScheduler_RunNextTask(TaskList* list)
 		return;
 	}
 	do {
-		uint32_t now = list->timeStamp();
+		uint32_t timeDelta = list->timeStamp() - currentTask->LastTimestamp;
+
 		// Task needs to be active and period expired for it to be run.
-		if (currentTask->Status == ActiveTask && currentTask->Period <= (now - currentTask->LastTimestamp))
+		if (currentTask->Status == ActiveTask && currentTask->Period <= timeDelta)
 		{
 			currentTask->Callback(currentTask->Data);
-			currentTask->LastTimestamp = now;
+			currentTask->LastTimestamp = list->timeStamp();
 			list->NextTask			   = (Task*)currentTask->List.Next;
 
 			if (currentTask->Type == SingleShotTask)
