@@ -41,4 +41,7 @@ target_sources(
 add_subdirectory(extern/linked_lists)
 target_link_libraries(${PROJECT_NAME} PUBLIC LinkedLists)
 
+add_subdirectory(extern/checksum_hash)
+target_link_libraries(${PROJECT_NAME} PRIVATE ChecksumHash)
+
 endif()
