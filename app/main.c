@@ -45,18 +45,33 @@ int main()
 		return 1;
 	}
 
-	TaskScheduler_CreateSingleShotTask(&tasklist, &IncTask, NULL, 5);
-	Task* changingTask = TaskScheduler_CreateRetriggerTask(&tasklist, &IncTask, NULL, 7);
-	TaskScheduler_CreateSingleShotTask(&tasklist, &IncTask, NULL, 2);
-	Task* removeTask = TaskScheduler_CreateRetriggerTask(&tasklist, &IncTask, NULL, 10);
+	Task* removeCheck = TaskScheduler_FindTask(&tasklist, "RemoveTask");
+	if (removeCheck != NULL)
+		return 1;
 
-	Task* testTask = TaskScheduler_CreateRetriggerTask(&tasklist, &IncTask, NULL, 10);
+
+	TaskScheduler_CreateSingleShotTask(&tasklist, "Single5", &IncTask, NULL, 5);
+	removeCheck = TaskScheduler_FindTask(&tasklist, "Single5");
+	if (removeCheck == NULL)
+		return 2;
+	TaskScheduler_RemoveTask(&tasklist, removeCheck);
+	if (tasklist.NextTask != NULL)
+	{
+		return 1;
+	}
+
+	TaskScheduler_CreateSingleShotTask(&tasklist, "Single5", &IncTask, NULL, 5);
+	Task* changingTask = TaskScheduler_CreateRetriggerTask(&tasklist, "ChangingTask", &IncTask, NULL, 7);
+	TaskScheduler_CreateSingleShotTask(&tasklist, "Single2", &IncTask, NULL, 2);
+	TaskScheduler_CreateRetriggerTask(&tasklist, "RemoveTask", &IncTask, NULL, 10);
+
+	Task* testTask = TaskScheduler_CreateRetriggerTask(&tasklist, "RetriggerFull", &IncTask, NULL, 10);
 	if (testTask != NULL)
 	{
 		return TEST_BUFFER_SIZE + 1;
 	}
 
-	testTask = TaskScheduler_CreateSingleShotTask(&tasklist, &IncTask, NULL, 10);
+	testTask = TaskScheduler_CreateSingleShotTask(&tasklist, "SingleFull", &IncTask, NULL, 10);
 	if (testTask != NULL)
 	{
 		return TEST_BUFFER_SIZE + 1;
@@ -108,6 +123,13 @@ int main()
 		testIndex++;
 	}
 
+	Task* removeTask = TaskScheduler_FindTask(&tasklist, "RemoveTask1");
+	if (removeTask != NULL)
+		return testIndex;
+
+	removeTask = TaskScheduler_FindTask(&tasklist, "RemoveTask");
+	if (removeTask == NULL)
+		return testIndex;
 	TaskScheduler_RemoveTask(&tasklist, removeTask);
 	while (getCurrentTime() - startTime < 81) { TaskScheduler_RunNextTask(&tasklist); }
 	while (testBuffer[testIndex] < 81)
@@ -119,7 +141,11 @@ int main()
 		testIndex++;
 	}
 
-	testTask = TaskScheduler_CreateRetriggerTask(&tasklist, &WrongInc, NULL, 1);
+	removeTask = TaskScheduler_FindTask(&tasklist, "RemoveTask");
+	if (removeTask != NULL)
+		return testIndex;
+
+	testTask = TaskScheduler_CreateRetriggerTask(&tasklist, "CallBackChange", &WrongInc, NULL, 1);
 	if (testTask == NULL)
 	{
 		return TEST_BUFFER_SIZE + 2;
