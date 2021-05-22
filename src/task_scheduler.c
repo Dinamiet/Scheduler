@@ -1,5 +1,13 @@
 #include "task_scheduler.h"
 
+// #include "fnv.h"
+// #define HASH_FUNC FNV_Hash
+
+#include "sdbm.h"
+#define HASH_FUNC SDBM_Hash
+
+#include <string.h>
+
 void TaskScheduler_Init(TaskList* taskList, uint32_t (*timeStampFunc)(), Task* buffer, uint32_t size)
 {
 	BufferedList_Init(&taskList->Tasks, (Node*)buffer, sizeof(Task), size);
@@ -7,12 +15,12 @@ void TaskScheduler_Init(TaskList* taskList, uint32_t (*timeStampFunc)(), Task* b
 	taskList->NextTask	= NULL;
 }
 
-Task* createNewTask(TaskList* list, TaskTypes type, void (*callback)(void*), void* data, uint32_t period)
+Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, void (*callback)(void*), void* data, uint32_t period)
 {
 	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
 	if (newTask)
 	{
-		newTask->Name		   = 0;
+		newTask->Name		   = HASH_FUNC((uint8_t*)taskName, strlen(taskName));
 		newTask->Type		   = type;
 		newTask->Status		   = ActiveTask;
 		newTask->Period		   = period;
@@ -27,14 +35,14 @@ Task* createNewTask(TaskList* list, TaskTypes type, void (*callback)(void*), voi
 	return newTask;
 }
 
-Task* TaskScheduler_CreateRetriggerTask(TaskList* list, void (*callback)(void*), void* data, uint32_t period)
+Task* TaskScheduler_CreateRetriggerTask(TaskList* list, char* name, void (*callback)(void*), void* data, uint32_t period)
 {
-	return createNewTask(list, RecurringTask, callback, data, period);
+	return createNewTask(list, name, RecurringTask, callback, data, period);
 }
 
-Task* TaskScheduler_CreateSingleShotTask(TaskList* list, void (*callback)(void*), void* data, uint32_t delay)
+Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, void (*callback)(void*), void* data, uint32_t delay)
 {
-	return createNewTask(list, SingleShotTask, callback, data, delay);
+	return createNewTask(list, name, SingleShotTask, callback, data, delay);
 }
 
 void TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status) { task->Status = status; }
@@ -45,6 +53,23 @@ void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void*
 {
 	task->Callback = callback;
 	task->Data	   = data;
+}
+
+Task* TaskScheduler_FindTask(TaskList* list, char* name)
+{
+	Task*	 task	  = (Task*)list->Tasks.Used.Head;
+	uint32_t taskName = HASH_FUNC((uint8_t*)name, strlen(name));
+	if (task == NULL)
+		return NULL;
+
+	do {
+		if (task->Name == taskName)
+			return task;
+		task = (Task*)task->List.Next;
+	} while (task != (Task*)list->Tasks.Used.Head);
+
+	//Task could not be found
+	return NULL;
 }
 
 void TaskScheduler_RemoveTask(TaskList* list, Task* task)
