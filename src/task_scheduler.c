@@ -98,9 +98,9 @@ void TaskScheduler_RunNextTask(TaskList* list)
 		// Task needs to be active and period expired for it to be run.
 		if (currentTask->Status == ActiveTask && currentTask->Period <= timeDelta)
 		{
-			currentTask->Status= RunningTask;
+			currentTask->Status = RunningTask;
 			currentTask->Callback(currentTask->Data);
-			currentTask->Status= ActiveTask;
+			currentTask->Status		   = ActiveTask;
 			currentTask->LastTimestamp = list->timeStamp();
 			list->NextTask			   = (Task*)currentTask->List.Next;
 
