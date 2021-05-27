@@ -50,7 +50,7 @@ int main()
 		return 1;
 
 
-	TaskScheduler_CreateSingleShotTask(&tasklist, "Single5", &IncTask, NULL, 5);
+	TaskScheduler_CreateSingleShotTask(&tasklist, "Single5", IncTask, NULL, 5);
 	removeCheck = TaskScheduler_FindTask(&tasklist, "Single5");
 	if (removeCheck == NULL)
 		return 2;
@@ -60,18 +60,18 @@ int main()
 		return 1;
 	}
 
-	TaskScheduler_CreateSingleShotTask(&tasklist, "Single5", &IncTask, NULL, 5);
-	Task* changingTask = TaskScheduler_CreateRetriggerTask(&tasklist, "ChangingTask", &IncTask, NULL, 7);
-	TaskScheduler_CreateSingleShotTask(&tasklist, "Single2", &IncTask, NULL, 2);
-	TaskScheduler_CreateRetriggerTask(&tasklist, "RemoveTask", &IncTask, NULL, 10);
+	TaskScheduler_CreateSingleShotTask(&tasklist, "Single5", IncTask, NULL, 5);
+	Task* changingTask = TaskScheduler_CreateRetriggerTask(&tasklist, "ChangingTask", IncTask, NULL, 7);
+	TaskScheduler_CreateSingleShotTask(&tasklist, "Single2", IncTask, NULL, 2);
+	TaskScheduler_CreateRetriggerTask(&tasklist, "RemoveTask", IncTask, NULL, 10);
 
-	Task* testTask = TaskScheduler_CreateRetriggerTask(&tasklist, "RetriggerFull", &IncTask, NULL, 10);
+	Task* testTask = TaskScheduler_CreateRetriggerTask(&tasklist, "RetriggerFull", IncTask, NULL, 10);
 	if (testTask != NULL)
 	{
 		return TEST_BUFFER_SIZE + 1;
 	}
 
-	testTask = TaskScheduler_CreateSingleShotTask(&tasklist, "SingleFull", &IncTask, NULL, 10);
+	testTask = TaskScheduler_CreateSingleShotTask(&tasklist, "SingleFull", IncTask, NULL, 10);
 	if (testTask != NULL)
 	{
 		return TEST_BUFFER_SIZE + 1;
@@ -145,12 +145,12 @@ int main()
 	if (removeTask != NULL)
 		return testIndex;
 
-	testTask = TaskScheduler_CreateRetriggerTask(&tasklist, "CallBackChange", &WrongInc, NULL, 1);
+	testTask = TaskScheduler_CreateRetriggerTask(&tasklist, "CallBackChange", WrongInc, NULL, 1);
 	if (testTask == NULL)
 	{
 		return TEST_BUFFER_SIZE + 2;
 	}
-	TaskScheduler_ChangeTaskCallback(testTask, &IncTask, NULL);
+	TaskScheduler_ChangeTaskCallback(testTask, IncTask, NULL);
 	while (getCurrentTime() - startTime < 86) { TaskScheduler_RunNextTask(&tasklist); }
 	while (testBuffer[testIndex] < 86)
 	{
