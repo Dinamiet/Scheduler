@@ -8,14 +8,14 @@
 
 #include <string.h>
 
-void TaskScheduler_Init(TaskList* taskList, uint32_t (*timeStampFunc)(), Task* buffer, uint32_t size)
+void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, uint32_t size)
 {
 	BufferedList_Init(&taskList->Tasks, (Node*)buffer, sizeof(Task), size);
 	taskList->timeStamp = timeStampFunc;
 	taskList->NextTask	= NULL;
 }
 
-Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, void (*callback)(void*), void* data, uint32_t period)
+Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, TaskCallback callback, void* data, uint32_t period)
 {
 	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
 	if (newTask)
@@ -35,12 +35,12 @@ Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, void (*callb
 	return newTask;
 }
 
-Task* TaskScheduler_CreateRetriggerTask(TaskList* list, char* name, void (*callback)(void*), void* data, uint32_t period)
+Task* TaskScheduler_CreateRetriggerTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t period)
 {
 	return createNewTask(list, name, RecurringTask, callback, data, period);
 }
 
-Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, void (*callback)(void*), void* data, uint32_t delay)
+Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t delay)
 {
 	return createNewTask(list, name, SingleShotTask, callback, data, delay);
 }
@@ -49,7 +49,7 @@ void TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status) { task->Statu
 
 void TaskScheduler_ChangeTaskPeriod(Task* task, uint32_t period) { task->Period = period; }
 
-void TaskScheduler_ChangeTaskCallback(Task* task, void (*callback)(void*), void* data)
+void TaskScheduler_ChangeTaskCallback(Task* task, TaskCallback callback, void* data)
 {
 	task->Callback = callback;
 	task->Data	   = data;
