@@ -14,7 +14,8 @@ typedef enum
 typedef enum
 {
 	InactiveTask,
-	ActiveTask
+	ActiveTask,
+	RunningTask
 } TaskStatus;
 
 typedef struct
