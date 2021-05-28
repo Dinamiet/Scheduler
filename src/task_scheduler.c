@@ -15,7 +15,7 @@ void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Tas
 	taskList->NextTask	= NULL;
 }
 
-Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, TaskCallback callback, void* data, uint32_t period)
+static Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, TaskCallback callback, void* data, uint32_t period)
 {
 	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
 	if (newTask)
