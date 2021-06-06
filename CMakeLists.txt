@@ -38,10 +38,10 @@ target_sources(
         src/task_scheduler.c
 )
 
-add_subdirectory(extern/linked_lists)
+add_subdirectory(extern/LinkedLists)
 target_link_libraries(${PROJECT_NAME} PUBLIC LinkedLists)
 
-add_subdirectory(extern/checksum_hash)
+add_subdirectory(extern/ChecksumHash)
 target_link_libraries(${PROJECT_NAME} PRIVATE ChecksumHash)
 
 endif()
