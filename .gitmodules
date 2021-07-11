@@ -1,8 +1,8 @@
-[submodule "extern/LinkedLists"]
-	path = extern/LinkedLists
-	url = ../linkedlists.git
+[submodule "lib/Buffers"]
+	path = lib/Buffers
+	url = ../buffers.git
 	branch = master
-[submodule "extern/ChecksumHash"]
-	path = extern/ChecksumHash
+[submodule "lib/ChecksumHash"]
+	path = lib/ChecksumHash
 	url = ../checksumhash.git
 	branch = master
