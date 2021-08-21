@@ -20,7 +20,7 @@ static Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, TaskC
 	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
 	if (newTask)
 	{
-		newTask->Name		   = HASH_FUNC((uint8_t*)taskName, strlen(taskName));
+		newTask->Name		   = HASH_FUNC(taskName, strlen(taskName));
 		newTask->Type		   = type;
 		newTask->Status		   = ActiveTask;
 		newTask->Period		   = period;
@@ -58,7 +58,7 @@ void TaskScheduler_ChangeTaskCallback(Task* task, TaskCallback callback, void* d
 Task* TaskScheduler_FindTask(TaskList* list, char* name)
 {
 	Task*	 task	  = (Task*)list->Tasks.Used.Head;
-	uint32_t taskName = HASH_FUNC((uint8_t*)name, strlen(name));
+	uint32_t taskName = HASH_FUNC(name, strlen(name));
 	if (task == NULL)
 		return NULL;
 
