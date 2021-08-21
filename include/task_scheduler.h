@@ -4,6 +4,7 @@
 #include "bufferedlist.h"
 
 #include <stdint.h>
+#include <stddef.h>
 
 typedef enum
 {
@@ -40,7 +41,7 @@ typedef struct
 	TimeStampCallback timeStamp;
 } TaskList;
 
-void  TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, uint32_t size);
+void  TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, size_t size);
 Task* TaskScheduler_CreateRetriggerTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t period);
 Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t delay);
 void  TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status);
