@@ -68,7 +68,7 @@ Task* TaskScheduler_FindTask(TaskList* list, char* name)
 		task = (Task*)task->List.Next;
 	} while (task != (Task*)list->Tasks.Used.Head);
 
-	//Task could not be found
+	// Task could not be found
 	return NULL;
 }
 
