@@ -8,9 +8,9 @@
 
 #include <string.h>
 
-void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, size_t size)
+void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, size_t num)
 {
-	BufferedList_Init(&taskList->Tasks, (Node*)buffer, sizeof(Task), size);
+	BufferedList_Init(&taskList->Tasks, (Node*)buffer, sizeof(Task), num);
 	taskList->timeStamp = timeStampFunc;
 	taskList->NextTask	= NULL;
 }
