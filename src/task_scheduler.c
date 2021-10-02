@@ -45,7 +45,9 @@ Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, TaskCallbac
 	return createNewTask(list, name, SingleShotTask, callback, data, delay);
 }
 
-void TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status) { task->Status = status; }
+void TaskScheduler_ActivateTask(Task* task) { task->Status = ActiveTask; }
+
+void TaskScheduler_DeactivateTask(Task* task) { task->Status = InactiveTask; }
 
 void TaskScheduler_ChangeTaskPeriod(Task* task, uint32_t period) { task->Period = period; }
 
@@ -85,30 +87,48 @@ void TaskScheduler_RemoveTask(TaskList* list, Task* task)
 	BufferedList_UnlinkNode(&list->Tasks, &task->List);
 }
 
-void TaskScheduler_RunNextTask(TaskList* list)
+Task* TaskScheduler_ReadyTask(TaskList* list)
 {
 	Task* currentTask = list->NextTask;
 	if (currentTask == NULL)
 	{
-		return;
+		return NULL;
 	}
+	uint32_t time = list->timeStamp();
 	do {
-		uint32_t timeDelta = list->timeStamp() - currentTask->LastTimestamp;
+		uint32_t timeDelta = time - currentTask->LastTimestamp;
 
 		// Task needs to be active and period expired for it to be run.
 		if (currentTask->Status == ActiveTask && currentTask->Period <= timeDelta)
 		{
-			currentTask->Status = RunningTask;
-			currentTask->Callback(currentTask->Data);
-			currentTask->Status		   = ActiveTask;
-			currentTask->LastTimestamp = list->timeStamp();
-			list->NextTask			   = (Task*)currentTask->List.Next;
-
-			if (currentTask->Type == SingleShotTask)
-				TaskScheduler_RemoveTask(list, currentTask);
-
-			return;
+			currentTask->Status = ReadyTask;
+			currentTask->LastTimestamp += currentTask->Period; // Add period, prevent delayed response to accumulate
+			list->NextTask = (Task*)currentTask->List.Next;
+			return currentTask;
 		}
 		currentTask = (Task*)currentTask->List.Next;
 	} while (currentTask != list->NextTask);
+
+	return NULL;
+}
+
+void TaskScheduler_ExecuteTask(Task* task)
+{
+	if (task && task->Status == ReadyTask)
+	{
+		task->Status = RunningTask;
+		task->Callback(task->Data);
+		task->Status = CleanTask;
+	}
+}
+
+void TaskScheduler_CleanTask(TaskList* list, Task* task)
+{
+	if (task && task->Status == CleanTask)
+	{
+		if (task->Type == SingleShotTask)
+			TaskScheduler_RemoveTask(list, task);
+		else
+			task->Status = ActiveTask;
+	}
 }

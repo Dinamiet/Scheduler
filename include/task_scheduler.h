@@ -3,8 +3,8 @@
 
 #include "bufferedlist.h"
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 typedef enum
 {
@@ -16,7 +16,9 @@ typedef enum
 {
 	InactiveTask,
 	ActiveTask,
-	RunningTask
+	ReadyTask,
+	RunningTask,
+	CleanTask
 } TaskStatus;
 
 typedef void (*TaskCallback)(void*);
@@ -41,14 +43,21 @@ typedef struct
 	TimeStampCallback timeStamp;
 } TaskList;
 
-void  TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, size_t num);
+void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, size_t num);
+
 Task* TaskScheduler_CreateRetriggerTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t period);
 Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t delay);
-void  TaskScheduler_ChangeTaskStatus(Task* task, TaskStatus status);
-void  TaskScheduler_ChangeTaskPeriod(Task* task, uint32_t period);
-void  TaskScheduler_ChangeTaskCallback(Task* task, TaskCallback callback, void* data);
+
+void TaskScheduler_ActivateTask(Task* task);
+void TaskScheduler_DeactivateTask(Task* task);
+void TaskScheduler_ChangeTaskPeriod(Task* task, uint32_t period);
+void TaskScheduler_ChangeTaskCallback(Task* task, TaskCallback callback, void* data);
+
 Task* TaskScheduler_FindTask(TaskList* list, char* name);
 void  TaskScheduler_RemoveTask(TaskList* list, Task* task);
-void  TaskScheduler_RunNextTask(TaskList* list);
+
+Task* TaskScheduler_ReadyTask(TaskList* list);
+void  TaskScheduler_ExecuteTask(Task* task);
+void  TaskScheduler_CleanTask(TaskList* taskList, Task* task);
 
 #endif
