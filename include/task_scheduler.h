@@ -31,7 +31,7 @@ typedef struct
 	TaskTypes	 Type;
 	TaskStatus	 Status;
 	uint32_t	 Period;
-	uint32_t	 LastTimestamp;
+	uint32_t	 NextRunTime;
 	void*		 Data;
 	TaskCallback Callback;
 } Task;

@@ -24,7 +24,7 @@ static Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, TaskC
 		newTask->Type		   = type;
 		newTask->Status		   = ActiveTask;
 		newTask->Period		   = period;
-		newTask->LastTimestamp = list->timeStamp();
+		newTask->NextRunTime   = list->timeStamp() + period;
 		newTask->Callback	   = callback;
 		newTask->Data		   = data;
 	}
@@ -96,13 +96,11 @@ Task* TaskScheduler_ReadyTask(TaskList* list)
 	}
 	uint32_t time = list->timeStamp();
 	do {
-		uint32_t timeDelta = time - currentTask->LastTimestamp;
-
 		// Task needs to be active and period expired for it to be run.
-		if (currentTask->Status == ActiveTask && currentTask->Period <= timeDelta)
+		if (currentTask->Status == ActiveTask && currentTask->NextRunTime <= time)
 		{
 			currentTask->Status = ReadyTask;
-			currentTask->LastTimestamp += currentTask->Period; // Add period, prevent delayed response to accumulate
+			currentTask->NextRunTime += currentTask->Period; // Add period, prevent delayed response to accumulate
 			list->NextTask = (Task*)currentTask->List.Next;
 			return currentTask;
 		}
