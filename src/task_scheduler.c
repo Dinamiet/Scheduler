@@ -96,10 +96,10 @@ Task* TaskScheduler_ReadyTask(TaskList* list)
 	}
 	uint32_t time = list->timeStamp();
 	do {
-		int32_t timeDelta = time - currentTask->LastTimestamp;
+		int32_t timeDelta = (int32_t)(time - currentTask->LastTimestamp);
 
 		// Task needs to be active and period expired for it to be run.
-		if (currentTask->Status == ActiveTask && timeDelta >= currentTask->Period)
+		if (currentTask->Status == ActiveTask && timeDelta >= (int32_t)currentTask->Period)
 		{
 			currentTask->Status		   = ReadyTask;
 			currentTask->LastTimestamp = time;
