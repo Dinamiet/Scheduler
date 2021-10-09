@@ -122,7 +122,7 @@ void TaskScheduler_ExecuteTask(Task* task)
 	}
 }
 
-void TaskScheduler_CleanTask(TaskList* list, Task* task)
+void TaskScheduler_QueueTask(TaskList* list, Task* task)
 {
 	if (task && task->Status == CleanTask)
 	{

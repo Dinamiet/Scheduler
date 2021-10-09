@@ -58,6 +58,6 @@ void  TaskScheduler_RemoveTask(TaskList* list, Task* task);
 
 Task* TaskScheduler_ReadyTask(TaskList* list);
 void  TaskScheduler_ExecuteTask(Task* task);
-void  TaskScheduler_CleanTask(TaskList* taskList, Task* task);
+void  TaskScheduler_QueueTask(TaskList* taskList, Task* task);
 
 #endif
