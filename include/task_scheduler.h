@@ -1,7 +1,7 @@
 #ifndef __TASK_SCHEDULER__
 #define __TASK_SCHEDULER__
 
-#include "bufferedlist.h"
+#include "linkedlist.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -39,14 +39,14 @@ typedef struct
 typedef struct
 {
 	Task*			  NextTask;
-	BufferedList	  Tasks;
+	LinkedList		  Tasks;
 	TimeStampCallback timeStamp;
 } TaskList;
 
-void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, size_t num);
+void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc);
 
-Task* TaskScheduler_CreateRetriggerTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t period);
-Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t delay);
+void TaskScheduler_CreateRetriggerTask(TaskList* list, Task* task, char* name, TaskCallback callback, void* data, uint32_t period);
+void TaskScheduler_CreateSingleShotTask(TaskList* list, Task* task, char* name, TaskCallback callback, void* data, uint32_t delay);
 
 void TaskScheduler_ActivateTask(Task* task);
 void TaskScheduler_DeactivateTask(Task* task);
@@ -56,7 +56,7 @@ void TaskScheduler_ChangeTaskCallback(Task* task, TaskCallback callback, void* d
 Task* TaskScheduler_FindTask(TaskList* list, char* name);
 void  TaskScheduler_RemoveTask(TaskList* list, Task* task);
 
-Task* TaskScheduler_ReadyTask(TaskList* list);
+Task* TaskScheduler_NextTask(TaskList* list);
 void  TaskScheduler_ExecuteTask(Task* task);
 void  TaskScheduler_QueueTask(TaskList* taskList, Task* task);
 

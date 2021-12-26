@@ -8,41 +8,39 @@
 
 #include <string.h>
 
-void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc, Task* buffer, size_t num)
+void TaskScheduler_Init(TaskList* taskList, TimeStampCallback timeStampFunc)
 {
-	BufferedList_Init(&taskList->Tasks, (Node*)buffer, sizeof(Task), num);
+	LinkedList_Init(&taskList->Tasks);
 	taskList->timeStamp = timeStampFunc;
 	taskList->NextTask	= NULL;
 }
 
-static Task* createNewTask(TaskList* list, char* taskName, TaskTypes type, TaskCallback callback, void* data, uint32_t period)
+static void createNewTask(TaskList* list, Task* task, char* taskName, TaskTypes type, TaskCallback callback, void* data, uint32_t period)
 {
-	Task* newTask = (Task*)BufferedList_LinkTail(&list->Tasks);
-	if (newTask)
+	if (task)
 	{
-		newTask->Name		   = taskName ? HASH_FUNC(taskName, strlen(taskName)) : 0;
-		newTask->Type		   = type;
-		newTask->Status		   = ActiveTask;
-		newTask->Period		   = period;
-		newTask->LastTimestamp = list->timeStamp() + period;
-		newTask->Callback	   = callback;
-		newTask->Data		   = data;
+		LinkedList_LinkTail(&list->Tasks, &task->List);
+		task->Name			= taskName ? HASH_FUNC(taskName, strlen(taskName)) : 0;
+		task->Type			= type;
+		task->Status		= ActiveTask;
+		task->Period		= period;
+		task->LastTimestamp = list->timeStamp() + period;
+		task->Callback		= callback;
+		task->Data			= data;
 	}
 
 	if (list->NextTask == NULL)
-		list->NextTask = newTask;
-
-	return newTask;
+		list->NextTask = task;
 }
 
-Task* TaskScheduler_CreateRetriggerTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t period)
+void TaskScheduler_CreateRetriggerTask(TaskList* list, Task* task, char* name, TaskCallback callback, void* data, uint32_t period)
 {
-	return createNewTask(list, name, RecurringTask, callback, data, period);
+	createNewTask(list, task, name, RecurringTask, callback, data, period);
 }
 
-Task* TaskScheduler_CreateSingleShotTask(TaskList* list, char* name, TaskCallback callback, void* data, uint32_t delay)
+void TaskScheduler_CreateSingleShotTask(TaskList* list, Task* task, char* name, TaskCallback callback, void* data, uint32_t delay)
 {
-	return createNewTask(list, name, SingleShotTask, callback, data, delay);
+	createNewTask(list, task, name, SingleShotTask, callback, data, delay);
 }
 
 void TaskScheduler_ActivateTask(Task* task) { task->Status = ActiveTask; }
@@ -59,7 +57,7 @@ void TaskScheduler_ChangeTaskCallback(Task* task, TaskCallback callback, void* d
 
 Task* TaskScheduler_FindTask(TaskList* list, char* name)
 {
-	Task*	 task	  = (Task*)list->Tasks.Used.Head;
+	Task*	 task	  = (Task*)list->Tasks.Head;
 	uint32_t taskName = name ? HASH_FUNC(name, strlen(name)) : 0;
 	if (task == NULL)
 		return NULL;
@@ -68,7 +66,7 @@ Task* TaskScheduler_FindTask(TaskList* list, char* name)
 		if (task->Name == taskName)
 			return task;
 		task = (Task*)task->List.Next;
-	} while (task != (Task*)list->Tasks.Used.Head);
+	} while (task != (Task*)list->Tasks.Head);
 
 	// Task could not be found
 	return NULL;
@@ -84,10 +82,10 @@ void TaskScheduler_RemoveTask(TaskList* list, Task* task)
 	if (list->NextTask == task)
 		list->NextTask = NULL;
 
-	BufferedList_UnlinkNode(&list->Tasks, &task->List);
+	LinkedList_UnlinkNode(&list->Tasks, &task->List);
 }
 
-Task* TaskScheduler_ReadyTask(TaskList* list)
+Task* TaskScheduler_NextTask(TaskList* list)
 {
 	Task* currentTask = list->NextTask;
 	if (currentTask == NULL)
