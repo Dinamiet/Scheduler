@@ -17,8 +17,8 @@
  */
 typedef enum _SchedulerTaskType_
 {
-	SCHEDULER_TASK_RECURRING, /**< Recurring/repeating task */
-	SCHEDULER_TASK_SINGLE,    /**< Execute/run task only once */
+	SCHEDULER_TASK_RECURRING, /** Recurring/repeating task */
+	SCHEDULER_TASK_SINGLE,    /** Execute/run task only once */
 } SchedulerTaskType;
 
 /**
@@ -26,11 +26,11 @@ typedef enum _SchedulerTaskType_
  */
 typedef enum _SchedulerTaskStatus_
 {
-	SCHEDULER_TASK_INACTIVE, /**< Task is disabled, will not be queued for execution */
-	SCHEDULER_TASK_ACTIVE,   /**< Task is active, will be queued for execution as requested */
-	SCHEDULER_TASK_READY,    /**< Task is ready to be executed, and removed from the waiting queue */
-	SCHEDULER_TASK_RUNNING,  /**< Task is currently executing */
-	SCHEDULER_TASK_CLEAN,    /**< Task is done with execution, marked for cleanup and placed back into the waiting queue */
+	SCHEDULER_TASK_INACTIVE, /** Task is disabled, will not be queued for execution */
+	SCHEDULER_TASK_ACTIVE,   /** Task is active, will be queued for execution as requested */
+	SCHEDULER_TASK_READY,    /** Task is ready to be executed, and removed from the waiting queue */
+	SCHEDULER_TASK_RUNNING,  /** Task is currently executing */
+	SCHEDULER_TASK_CLEAN,    /** Task is done with execution, marked for cleanup and placed back into the waiting queue */
 } SchedulerTaskStatus;
 
 /**
