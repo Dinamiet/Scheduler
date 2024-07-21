@@ -8,7 +8,7 @@ FetchContent_Declare(
 	GIT_REPOSITORY
 		git@bitbucket.org:dinamiet/buffers.git
 	GIT_TAG
-		master
+		development
 	SOURCE_DIR
 		${CMAKE_SOURCE_DIR}/lib/Buffers
 )

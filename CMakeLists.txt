@@ -67,9 +67,9 @@ target_include_directories(
 target_sources(
 	${PROJECT_NAME}
 	PUBLIC
-		include/task_scheduler.h
+		include/scheduler.h
 	PRIVATE
-		src/task_scheduler.c
+		src/scheduler.c
 )
 
 add_subdirectory(lib)
