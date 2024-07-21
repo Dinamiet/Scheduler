@@ -102,6 +102,13 @@ void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, size_t i
 void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, size_t id, Scheduler_TaskFunction taskFunc, void* data, uint32_t delay);
 
 /**
+ * Retreives the current status of a task
+ * \param task The task of interest
+ * \return The tasks current status
+ */
+SchedulerTaskStatus Scheduler_TaskStatus(SchedulerTask* task);
+
+/**
  * Changes a tasks status to active.
  * Active tasks will be executed when required.
  * Only inactive task's status can be updated/changed.

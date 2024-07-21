@@ -37,6 +37,11 @@ void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, size_t id, 
 newTask(scheduler, task, id, SCHEDULER_TASK_SINGLE, taskFunc, data, delay);
 }
 
+SchedulerTaskStatus Scheduler_TaskStatus(SchedulerTask* task)
+{
+	return task->Status;
+}
+
 void Scheduler_Activate(SchedulerTask* task)
 {
 if (task->Status == SCHEDULER_TASK_INACTIVE)
