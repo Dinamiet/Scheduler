@@ -18,7 +18,7 @@
 typedef enum _SchedulerTaskType_
 {
 	SCHEDULER_TASK_RECURRING, /**< Recurring/repeating task */
-	SCHEDULER_TASK_SINGLE, /**< Execute/run task only once */
+	SCHEDULER_TASK_SINGLE,    /**< Execute/run task only once */
 } SchedulerTaskType;
 
 /**
@@ -27,10 +27,10 @@ typedef enum _SchedulerTaskType_
 typedef enum _SchedulerTaskStatus_
 {
 	SCHEDULER_TASK_INACTIVE, /**< Task is disabled, will not be queued for execution */
-	SCHEDULER_TASK_ACTIVE, /**< Task is active, will be queued for execution as requested */
-	SCHEDULER_TASK_READY, /**< Task is ready to be executed, and removed from the waiting queue */
-	SCHEDULER_TASK_RUNNING, /**< Task is currently executing */
-	SCHEDULER_TASK_CLEAN, /**< Task is done with execution, marked for cleanup and placed back into the waiting queue */
+	SCHEDULER_TASK_ACTIVE,   /**< Task is active, will be queued for execution as requested */
+	SCHEDULER_TASK_READY,    /**< Task is ready to be executed, and removed from the waiting queue */
+	SCHEDULER_TASK_RUNNING,  /**< Task is currently executing */
+	SCHEDULER_TASK_CLEAN,    /**< Task is done with execution, marked for cleanup and placed back into the waiting queue */
 } SchedulerTaskStatus;
 
 /**
@@ -46,20 +46,19 @@ typedef void (*Scheduler_TaskFunction)(void* data);
  */
 typedef uint32_t (*Scheduler_Time)();
 
-
 /**
  * Task information
  */
 typedef struct _SchedulerTask_
 {
-	Node Node;
-	size_t ID;
-	SchedulerTaskType Type;
-	SchedulerTaskStatus Status;
-	uint32_t Period;
-	uint32_t LastTimestamp;
+	Node                   Node;
+	size_t                 ID;
+	SchedulerTaskType      Type;
+	SchedulerTaskStatus    Status;
+	uint32_t               Period;
+	uint32_t               LastTimestamp;
 	Scheduler_TaskFunction TaskFunc;
-	void* Data;
+	void*                  Data;
 } SchedulerTask;
 
 /**
@@ -68,7 +67,7 @@ typedef struct _SchedulerTask_
 typedef struct _Scheduler_
 {
 	SchedulerTask* NextTask;
-	LinkedList Tasks;
+	LinkedList     Tasks;
 	Scheduler_Time Time;
 } Scheduler;
 
