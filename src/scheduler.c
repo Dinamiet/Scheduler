@@ -1,9 +1,22 @@
 #include "scheduler.h"
 
-static void
-		newTask(Scheduler* scheduler, SchedulerTask* task, size_t id, SchedulerTaskType type, Scheduler_TaskFunction func, void* data, uint32_t period);
+static void newTask(
+		Scheduler*                   scheduler,
+		SchedulerTask*               task,
+		const size_t                 id,
+		const SchedulerTaskType      type,
+		const Scheduler_TaskFunction func,
+		const void*                  data,
+		const uint32_t               period);
 
-static void newTask(Scheduler* scheduler, SchedulerTask* task, size_t id, SchedulerTaskType type, Scheduler_TaskFunction func, void* data, uint32_t period)
+static void newTask(
+		Scheduler*                   scheduler,
+		SchedulerTask*               task,
+		const size_t                 id,
+		const SchedulerTaskType      type,
+		const Scheduler_TaskFunction func,
+		const void*                  data,
+		const uint32_t               period)
 {
 	if (task)
 	{
@@ -21,24 +34,24 @@ static void newTask(Scheduler* scheduler, SchedulerTask* task, size_t id, Schedu
 		scheduler->NextTask = task;
 }
 
-void Scheduler_Init(Scheduler* scheduler, Scheduler_Time time)
+void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time)
 {
 	LinkedList_Init(&scheduler->Tasks);
 	scheduler->Time     = time;
 	scheduler->NextTask = NULL;
 }
 
-void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, size_t id, Scheduler_TaskFunction taskFunc, void* data, uint32_t period)
+void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, const void* data, const uint32_t period)
 {
 	newTask(scheduler, task, id, SCHEDULER_TASK_RECURRING, taskFunc, data, period);
 }
 
-void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, size_t id, Scheduler_TaskFunction taskFunc, void* data, uint32_t delay)
+void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, const void* data, const uint32_t delay)
 {
 	newTask(scheduler, task, id, SCHEDULER_TASK_SINGLE, taskFunc, data, delay);
 }
 
-SchedulerTaskStatus Scheduler_TaskStatus(SchedulerTask* task) { return task->Status; }
+SchedulerTaskStatus Scheduler_TaskStatus(const SchedulerTask* task) { return task->Status; }
 
 void Scheduler_Activate(SchedulerTask* task)
 {
@@ -48,9 +61,9 @@ void Scheduler_Activate(SchedulerTask* task)
 
 void Scheduler_Deactivate(SchedulerTask* task) { task->Status = SCHEDULER_TASK_INACTIVE; }
 
-void Scheduler_ChangePeriod(SchedulerTask* task, uint32_t newPeriod) { task->Period = newPeriod; }
+void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod) { task->Period = newPeriod; }
 
-void Scheduler_ChangeTaskFunc(SchedulerTask* task, Scheduler_TaskFunction taskFunc, void* data)
+void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, const void* data)
 {
 	if (taskFunc)
 		task->TaskFunc = taskFunc;
@@ -58,7 +71,7 @@ void Scheduler_ChangeTaskFunc(SchedulerTask* task, Scheduler_TaskFunction taskFu
 	task->Data = data;
 }
 
-SchedulerTask* Scheduler_FindTask(Scheduler* scheduler, size_t id)
+SchedulerTask* Scheduler_FindTask(Scheduler* scheduler, const size_t id)
 {
 	SchedulerTask* task = LinkedList_Head(&scheduler->Tasks);
 	if (task)
