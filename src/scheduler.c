@@ -20,7 +20,7 @@ static void newTask(
 {
 	if (task)
 	{
-		LinkedList_AddTail(&scheduler->Tasks, task);
+		LinkedList_AddEnd(&scheduler->Tasks, task);
 		task->ID            = id;
 		task->Type          = type;
 		task->Status        = SCHEDULER_TASK_ACTIVE;
@@ -73,7 +73,7 @@ void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction 
 
 SchedulerTask* Scheduler_FindTask(Scheduler* scheduler, const size_t id)
 {
-	SchedulerTask* task = LinkedList_Head(&scheduler->Tasks);
+	SchedulerTask* task = LinkedList_First(&scheduler->Tasks);
 	if (task)
 	{
 		do {
@@ -81,7 +81,7 @@ SchedulerTask* Scheduler_FindTask(Scheduler* scheduler, const size_t id)
 				return task;
 
 			task = LinkedList_Next(task);
-		} while (task != LinkedList_Head(&scheduler->Tasks));
+		} while (task != LinkedList_First(&scheduler->Tasks));
 	}
 
 	return NULL;
@@ -97,7 +97,7 @@ void Scheduler_Remove(Scheduler* scheduler, SchedulerTask* task)
 	if (scheduler->NextTask == task)
 		scheduler->NextTask = NULL;
 
-	LinkedList_RemoveNode(&scheduler->Tasks, task);
+	LinkedList_Remove(&scheduler->Tasks, task);
 }
 
 SchedulerTask* Scheduler_NextReady(Scheduler* scheduler)
