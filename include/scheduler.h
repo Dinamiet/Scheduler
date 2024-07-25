@@ -37,7 +37,7 @@ typedef enum _SchedulerTaskStatus_
  * The function which a task should execute
  * \param data The data required by the task to work on
  */
-typedef void (*Scheduler_TaskFunction)(const void* data);
+typedef void (*Scheduler_TaskFunction)(void* data);
 
 /**
  * Scheduler time function template.
@@ -58,7 +58,7 @@ typedef struct _SchedulerTask_
 	uint32_t               Period;
 	uint32_t               LastTimestamp;
 	Scheduler_TaskFunction TaskFunc;
-	const void*            Data;
+	void*                  Data;
 } SchedulerTask;
 
 /**
@@ -87,13 +87,7 @@ void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time);
  * \param data The data passed to the task when executed
  * \param period How often the task should be executed
  */
-void Scheduler_RecurringTask(
-		Scheduler*                   scheduler,
-		SchedulerTask*               task,
-		const size_t                 id,
-		const Scheduler_TaskFunction taskFunc,
-		const void*                  data,
-		const uint32_t               period);
+void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t period);
 
 /**
  * Creates a new active single execution task in the scheduler.
@@ -104,7 +98,7 @@ void Scheduler_RecurringTask(
  * \param data The data passed to the task when executed
  * \param delay How long to wait before the task is executed
  */
-void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, const void* data, const uint32_t delay);
+void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay);
 
 /**
  * Retreives the current status of a task
@@ -142,7 +136,7 @@ void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod);
  * \param taskFunc The new function to assign to the task. Set to NULL to only change data.
  * \param data New function data for the task.
  */
-void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, const void* data);
+void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, void* data);
 
 /**
  * Find a task added to scheduler

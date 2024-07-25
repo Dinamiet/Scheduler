@@ -6,7 +6,7 @@ static void newTask(
 		const size_t                 id,
 		const SchedulerTaskType      type,
 		const Scheduler_TaskFunction func,
-		const void*                  data,
+		void*                        data,
 		const uint32_t               period);
 
 static void newTask(
@@ -15,7 +15,7 @@ static void newTask(
 		const size_t                 id,
 		const SchedulerTaskType      type,
 		const Scheduler_TaskFunction func,
-		const void*                  data,
+		void*                        data,
 		const uint32_t               period)
 {
 	if (task)
@@ -41,12 +41,12 @@ void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time)
 	scheduler->NextTask = NULL;
 }
 
-void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, const void* data, const uint32_t period)
+void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t period)
 {
 	newTask(scheduler, task, id, SCHEDULER_TASK_RECURRING, taskFunc, data, period);
 }
 
-void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, const void* data, const uint32_t delay)
+void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay)
 {
 	newTask(scheduler, task, id, SCHEDULER_TASK_SINGLE, taskFunc, data, delay);
 }
@@ -63,7 +63,7 @@ void Scheduler_Deactivate(SchedulerTask* task) { task->Status = SCHEDULER_TASK_I
 
 void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod) { task->Period = newPeriod; }
 
-void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, const void* data)
+void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, void* data)
 {
 	if (taskFunc)
 		task->TaskFunc = taskFunc;
