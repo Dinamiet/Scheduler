@@ -43,12 +43,12 @@ void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time)
 
 void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t period)
 {
-	newTask(scheduler, task, id, SCHEDULER_TASK_RECURRING, taskFunc, data, period);
+	newTask(scheduler, task, id, SCHEDULER_RECURRING_TASK, taskFunc, data, period);
 }
 
 void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay)
 {
-	newTask(scheduler, task, id, SCHEDULER_TASK_SINGLE, taskFunc, data, delay);
+	newTask(scheduler, task, id, SCHEDULER_SINGLE_TASK, taskFunc, data, delay);
 }
 
 SchedulerTaskStatus Scheduler_TaskStatus(const SchedulerTask* task) { return task->Status; }
@@ -139,7 +139,7 @@ void Scheduler_Queue(Scheduler* scheduler, SchedulerTask* task)
 {
 	if (task && task->Status == SCHEDULER_TASK_CLEAN)
 	{
-		if (task->Type == SCHEDULER_TASK_SINGLE)
+		if (task->Type == SCHEDULER_SINGLE_TASK)
 		{
 			task->Status = SCHEDULER_TASK_INACTIVE;
 			Scheduler_Remove(scheduler, task);

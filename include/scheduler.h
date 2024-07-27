@@ -17,8 +17,8 @@
  */
 typedef enum _SchedulerTaskType_
 {
-	SCHEDULER_TASK_RECURRING, /** Recurring/repeating task */
-	SCHEDULER_TASK_SINGLE,    /** Execute/run task only once */
+	SCHEDULER_RECURRING_TASK, /** Recurring/repeating task */
+	SCHEDULER_SINGLE_TASK,    /** Execute/run task only once */
 } SchedulerTaskType;
 
 /**
