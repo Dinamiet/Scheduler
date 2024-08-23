@@ -1,5 +1,7 @@
 #include "scheduler.h"
 
+#include <assert.h>
+
 static void newTask(
 		Scheduler*                   scheduler,
 		SchedulerTask*               task,
@@ -18,17 +20,18 @@ static void newTask(
 		void*                        data,
 		const uint32_t               period)
 {
-	if (task)
-	{
-		LinkedList_AddEnd(&scheduler->Tasks, task);
-		task->ID            = id;
-		task->Type          = type;
-		task->Status        = SCHEDULER_TASK_ACTIVE;
-		task->Period        = period;
-		task->LastTimestamp = scheduler->Time();
-		task->TaskFunc      = func;
-		task->Data          = data;
-	}
+	assert(scheduler != NULL);
+	assert(task != NULL);
+	assert(func != NULL);
+
+	LinkedList_AddEnd(&scheduler->Tasks, task);
+	task->ID            = id;
+	task->Type          = type;
+	task->Status        = SCHEDULER_TASK_ACTIVE;
+	task->Period        = period;
+	task->LastTimestamp = scheduler->Time();
+	task->TaskFunc      = func;
+	task->Data          = data;
 
 	if (scheduler->NextTask == NULL)
 		scheduler->NextTask = task;
@@ -36,6 +39,9 @@ static void newTask(
 
 void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time)
 {
+	assert(scheduler != NULL);
+	assert(time != NULL);
+
 	LinkedList_Init(&scheduler->Tasks);
 	scheduler->Time     = time;
 	scheduler->NextTask = NULL;
@@ -51,20 +57,39 @@ void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_
 	newTask(scheduler, task, id, SCHEDULER_SINGLE_TASK, taskFunc, data, delay);
 }
 
-SchedulerTaskStatus Scheduler_TaskStatus(const SchedulerTask* task) { return task->Status; }
+SchedulerTaskStatus Scheduler_TaskStatus(const SchedulerTask* task)
+{
+	assert(scheduler != NULL);
+
+	return task->Status;
+}
 
 void Scheduler_Activate(SchedulerTask* task)
 {
+	assert(scheduler != NULL);
+
 	if (task->Status == SCHEDULER_TASK_INACTIVE)
 		task->Status = SCHEDULER_TASK_ACTIVE;
 }
 
-void Scheduler_Deactivate(SchedulerTask* task) { task->Status = SCHEDULER_TASK_INACTIVE; }
+void Scheduler_Deactivate(SchedulerTask* task)
+{
+	assert(scheduler != NULL);
 
-void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod) { task->Period = newPeriod; }
+	task->Status = SCHEDULER_TASK_INACTIVE;
+}
+
+void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod)
+{
+	assert(scheduler != NULL);
+
+	task->Period = newPeriod;
+}
 
 void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, void* data)
 {
+	assert(scheduler != NULL);
+
 	if (taskFunc)
 		task->TaskFunc = taskFunc;
 
@@ -73,6 +98,8 @@ void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction 
 
 SchedulerTask* Scheduler_FindTask(Scheduler* scheduler, const size_t id)
 {
+	assert(scheduler != NULL);
+
 	SchedulerTask* task = LinkedList_First(&scheduler->Tasks);
 	if (task)
 	{
@@ -89,6 +116,8 @@ SchedulerTask* Scheduler_FindTask(Scheduler* scheduler, const size_t id)
 
 void Scheduler_Remove(Scheduler* scheduler, SchedulerTask* task)
 {
+	assert(scheduler != NULL);
+
 	// Queue the next task if task to be removed is next in queue
 	if (scheduler->NextTask == task)
 		scheduler->NextTask = LinkedList_Next(task);
@@ -102,6 +131,8 @@ void Scheduler_Remove(Scheduler* scheduler, SchedulerTask* task)
 
 SchedulerTask* Scheduler_NextReady(Scheduler* scheduler)
 {
+	assert(scheduler != NULL);
+
 	SchedulerTask* currentTask = scheduler->NextTask;
 	if (!currentTask)
 		return NULL;
@@ -137,6 +168,8 @@ void Scheduler_Execute(SchedulerTask* task)
 
 void Scheduler_Queue(Scheduler* scheduler, SchedulerTask* task)
 {
+	assert(scheduler != NULL);
+
 	if (task && task->Status == SCHEDULER_TASK_CLEAN)
 	{
 		if (task->Type == SCHEDULER_SINGLE_TASK)
