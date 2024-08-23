@@ -59,14 +59,14 @@ void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_
 
 SchedulerTaskStatus Scheduler_TaskStatus(const SchedulerTask* task)
 {
-	assert(scheduler != NULL);
+	assert(task != NULL);
 
 	return task->Status;
 }
 
 void Scheduler_Activate(SchedulerTask* task)
 {
-	assert(scheduler != NULL);
+	assert(task != NULL);
 
 	if (task->Status == SCHEDULER_TASK_INACTIVE)
 		task->Status = SCHEDULER_TASK_ACTIVE;
@@ -74,21 +74,21 @@ void Scheduler_Activate(SchedulerTask* task)
 
 void Scheduler_Deactivate(SchedulerTask* task)
 {
-	assert(scheduler != NULL);
+	assert(task != NULL);
 
 	task->Status = SCHEDULER_TASK_INACTIVE;
 }
 
 void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod)
 {
-	assert(scheduler != NULL);
+	assert(task != NULL);
 
 	task->Period = newPeriod;
 }
 
 void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, void* data)
 {
-	assert(scheduler != NULL);
+	assert(task != NULL);
 
 	if (taskFunc)
 		task->TaskFunc = taskFunc;
