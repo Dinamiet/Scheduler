@@ -21,6 +21,7 @@ static void newTask(
 		const uint32_t               period)
 {
 	assert(scheduler != NULL);
+	assert(scheduler->Time != NULL);
 	assert(task != NULL);
 	assert(func != NULL);
 
@@ -132,6 +133,7 @@ void Scheduler_Remove(Scheduler* scheduler, SchedulerTask* task)
 SchedulerTask* Scheduler_NextReady(Scheduler* scheduler)
 {
 	assert(scheduler != NULL);
+	assert(scheduler->Time != NULL);
 
 	SchedulerTask* currentTask = scheduler->NextTask;
 	if (!currentTask)
