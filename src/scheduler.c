@@ -48,12 +48,12 @@ void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time)
 	scheduler->NextTask = NULL;
 }
 
-void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t period)
+void Scheduler_CreateRecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t period)
 {
 	newTask(scheduler, task, id, SCHEDULER_RECURRING_TASK, taskFunc, data, period);
 }
 
-void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay)
+void Scheduler_CreateSingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay)
 {
 	newTask(scheduler, task, id, SCHEDULER_SINGLE_TASK, taskFunc, data, delay);
 }

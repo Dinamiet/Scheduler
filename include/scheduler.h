@@ -87,7 +87,13 @@ void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time);
  * \param data The data passed to the task when executed
  * \param period How often the task should be executed
  */
-void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t period);
+void Scheduler_CreateRecurringTask(
+		Scheduler*                   scheduler,
+		SchedulerTask*               task,
+		const size_t                 id,
+		const Scheduler_TaskFunction taskFunc,
+		void*                        data,
+		const uint32_t               period);
 
 /**
  * Creates a new active single execution task in the scheduler.
@@ -98,7 +104,7 @@ void Scheduler_RecurringTask(Scheduler* scheduler, SchedulerTask* task, const si
  * \param data The data passed to the task when executed
  * \param delay How long to wait before the task is executed
  */
-void Scheduler_SingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay);
+void Scheduler_CreateSingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay);
 
 /**
  * Retreives the current status of a task
