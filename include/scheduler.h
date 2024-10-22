@@ -137,6 +137,13 @@ void Scheduler_Deactivate(SchedulerTask* task);
 void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod);
 
 /**
+ * Restarts the task's delay or period to be triggered from this time
+ * \param scheduler Scheduler that contains the task of interest
+ * \param task Task's period to refresh
+ */
+void Scheduler_Refresh(const Scheduler* scheduler, SchedulerTask* task);
+
+/**
  * Changes the function of a task.
  * \param task Task's function to change
  * \param taskFunc The new function to assign to the task. Set to NULL to only change data.

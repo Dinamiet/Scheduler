@@ -87,6 +87,15 @@ void Scheduler_ChangePeriod(SchedulerTask* task, const uint32_t newPeriod)
 	task->Period = newPeriod;
 }
 
+void Scheduler_Refresh(const Scheduler* scheduler, SchedulerTask* task)
+{
+	assert(scheduler != NULL);
+	assert(scheduler->Time != NULL);
+	assert(task != NULL);
+
+	task->LastTimestamp = scheduler->Time();
+}
+
 void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, void* data)
 {
 	assert(task != NULL);
