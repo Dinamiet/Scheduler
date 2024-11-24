@@ -3,27 +3,27 @@
 #include <assert.h>
 
 static void newTask(
-		Scheduler*                   scheduler,
-		SchedulerTask*               task,
-		const size_t                 id,
-		const SchedulerTaskType      type,
-		const Scheduler_TaskFunction func,
-		void*                        data,
-		const uint32_t               period);
+		Scheduler*                  scheduler,
+		SchedulerTask*              task,
+		const size_t                id,
+		const SchedulerTaskType     type,
+		const Scheduler_TaskHandler task_handler,
+		void*                       data,
+		const uint32_t              period);
 
 static void newTask(
-		Scheduler*                   scheduler,
-		SchedulerTask*               task,
-		const size_t                 id,
-		const SchedulerTaskType      type,
-		const Scheduler_TaskFunction func,
-		void*                        data,
-		const uint32_t               period)
+		Scheduler*                  scheduler,
+		SchedulerTask*              task,
+		const size_t                id,
+		const SchedulerTaskType     type,
+		const Scheduler_TaskHandler task_handler,
+		void*                       data,
+		const uint32_t              period)
 {
 	assert(scheduler != NULL);
 	assert(scheduler->Time != NULL);
 	assert(task != NULL);
-	assert(func != NULL);
+	assert(task_handler != NULL);
 
 	LinkedList_AddEnd(&scheduler->Tasks, task);
 	task->ID            = id;
@@ -31,31 +31,37 @@ static void newTask(
 	task->Status        = SCHEDULER_TASK_ACTIVE;
 	task->Period        = period;
 	task->LastTimestamp = scheduler->Time();
-	task->TaskFunc      = func;
+	task->Handler       = task_handler;
 	task->Data          = data;
 
 	if (scheduler->NextTask == NULL)
 		scheduler->NextTask = task;
 }
 
-void Scheduler_Init(Scheduler* scheduler, const Scheduler_Time time)
+void Scheduler_Init(Scheduler* scheduler, const Scheduler_TimeInterface time_interface)
 {
 	assert(scheduler != NULL);
-	assert(time != NULL);
+	assert(time_interface != NULL);
 
 	LinkedList_Init(&scheduler->Tasks);
-	scheduler->Time     = time;
+	scheduler->Time     = time_interface;
 	scheduler->NextTask = NULL;
 }
 
-void Scheduler_CreateRecurringTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t period)
+void Scheduler_CreateRecurringTask(
+		Scheduler*                  scheduler,
+		SchedulerTask*              task,
+		const size_t                id,
+		const Scheduler_TaskHandler task_handler,
+		void*                       data,
+		const uint32_t              period)
 {
-	newTask(scheduler, task, id, SCHEDULER_RECURRING_TASK, taskFunc, data, period);
+	newTask(scheduler, task, id, SCHEDULER_RECURRING_TASK, task_handler, data, period);
 }
 
-void Scheduler_CreateSingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskFunction taskFunc, void* data, const uint32_t delay)
+void Scheduler_CreateSingleTask(Scheduler* scheduler, SchedulerTask* task, const size_t id, const Scheduler_TaskHandler task_handler, void* data, const uint32_t delay)
 {
-	newTask(scheduler, task, id, SCHEDULER_SINGLE_TASK, taskFunc, data, delay);
+	newTask(scheduler, task, id, SCHEDULER_SINGLE_TASK, task_handler, data, delay);
 }
 
 SchedulerTaskStatus Scheduler_TaskStatus(const SchedulerTask* task)
@@ -96,12 +102,12 @@ void Scheduler_Refresh(const Scheduler* scheduler, SchedulerTask* task)
 	task->LastTimestamp = scheduler->Time();
 }
 
-void Scheduler_ChangeTaskFunc(SchedulerTask* task, const Scheduler_TaskFunction taskFunc, void* data)
+void Scheduler_ChangeTaskHandler(SchedulerTask* task, const Scheduler_TaskHandler task_handler, void* data)
 {
 	assert(task != NULL);
 
-	if (taskFunc)
-		task->TaskFunc = taskFunc;
+	if (task_handler)
+		task->Handler = task_handler;
 
 	task->Data = data;
 }
@@ -172,7 +178,7 @@ void Scheduler_Execute(SchedulerTask* task)
 	if (task && task->Status == SCHEDULER_TASK_READY)
 	{
 		task->Status = SCHEDULER_TASK_RUNNING;
-		task->TaskFunc(task->Data);
+		task->Handler(task->Data);
 		task->Status = SCHEDULER_TASK_CLEAN;
 	}
 }
